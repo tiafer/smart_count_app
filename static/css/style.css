@@ -1,0 +1,111 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #ffffff;
+}
+
+header h1 {
+    font-size: 24px;
+    color: #1a1a1a;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 15px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #1a1a1a;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #4b67d4;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.main-content {
+    padding: 50px;
+    text-align: left;
+}
+
+.main-content h2 {
+    font-size: 36px;
+    color: #1a1a1a;
+}
+
+.main-content p {
+    font-size: 18px;
+    color: #606060;
+}
+
+.main-content ul {
+    list-style: none;
+    padding: 0;
+    font-size: 18px;
+    color: #1a1a1a;
+}
+
+.main-content ul li {
+    margin: 10px 0;
+}
+
+.buttons {
+    margin-top: 20px;
+}
+
+.buttons .learn-more {
+    background-color: #4b67d4;
+    margin-right: 15px;
+}
+
+.buttons .consultation {
+    background-color: #e0e0e0;
+    color: #4b67d4;
+}
+
+.image-container {
+    margin-top: 40px;
+    position: relative;
+    display: inline-block;
+}
+
+.image-container img {
+    max-width: 100%;
+}
+
+.live-occupancy {
+    position: absolute;
+    top: 10%;
+    left: 70%;
+    background-color: #ffffff;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.live-occupancy span {
+    display: block;
+    font-size: 14px;
+    color: #606060;
+}
+
+.live-occupancy strong {
+    font-size: 32px;
+    color: #1a1a1a;
+}

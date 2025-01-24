@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Count - YOLO</title>
+    <style>
+        #video-container {
+            position: relative;
+        }
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .controls {
+            margin-top: 10px;
+        }
+        .controls button {
+            margin-right: 10px;
+            padding: 10px 15px;
+            background-color: #4267B2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .controls button:hover {
+            background-color: #365899;
+        }
+    </style>
+    <script>
+        let canvas, ctx, isDrawing = false, lines = [], startX, startY, lineType = 'up';
+
+        function initCanvas() {
+            const video = document.getElementById('video');
+            canvas = document.createElement('canvas');
+            canvas.width = video.width;
+            canvas.height = video.height;
+            canvas.style.zIndex = 10;
+            canvas.style.cursor = 'crosshair';
+
+            video.parentElement.appendChild(canvas);
+            ctx = canvas.getContext('2d');
+
+            canvas.addEventListener('mousedown', (e) => {
+                isDrawing = true;
+                const rect = canvas.getBoundingClientRect();
+                startX = e.clientX - rect.left;
+                startY = e.clientY - rect.top;
+            });
+
+            canvas.addEventListener('mouseup', (e) => {
+                if (!isDrawing) return;
+                isDrawing = false;
+
+                const rect = canvas.getBoundingClientRect();
+                const endX = e.clientX - rect.left;
+                const endY = e.clientY - rect.top;
+
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+                ctx.lineTo(endX, endY);
+                ctx.strokeStyle = lineType === 'up' ? 'blue' : 'red';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                lines.push([[startX, startY], [endX, endY], lineType]);
+                console.log("Linha desenhada:", lines[lines.length - 1]);
+            });
+        }
+
+        function sendLines() {
+            fetch('/set-lines', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ lines })
+            }).then(response => response.json())
+              .then(data => alert(data.status))
+              .catch(error => alert("Erro ao enviar as linhas."));
+            console.log("Linhas enviadas:", lines);
+        }
+
+        function setLineType(type) {
+            lineType = type;
+        }
+
+        function startAnalysis(event) {
+            event.preventDefault();
+            fetch('/start-analysis', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => alert(data.status))
+                .catch(error => alert("Erro ao iniciar a análise."));
+        }
+
+        function clearLines() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            lines = [];
+        }
+
+        window.onload = initCanvas;
+    </script>
+</head>
+<body>
+    <div id="video-container">
+        <img id="video" src="{{ url_for('video_feed') }}" alt="Feed de vídeo" width="640" height="360">
+    </div>
+    <div class="controls">
+        <button onclick="setLineType('up')">Criar Linha para Objetos de Cima</button>
+        <button onclick="setLineType('down')">Criar Linha para Objetos de Baixo</button>
+        <button onclick="sendLines()">Salvar Linhas</button>
+        <button onclick="clearLines()">Limpar Linhas</button>
+        <button onclick="startAnalysis(event)">Iniciar Análise</button>
+    </div>
+</body>
+</html>
